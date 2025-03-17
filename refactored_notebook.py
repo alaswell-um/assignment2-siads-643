@@ -194,5 +194,5 @@ if __name__ == '__main__':
                                                 metric=TARGET_METRIC)
 
     # Print treemap hierarchical blocks to be used in treemap visual
-    print(l1_grouping_treemap)
-    print(l1_grouping_treemap)
+    print('l1_grouping_treemap:', l1_grouping_treemap)
+    print('l2_grouping_treemap', l2_grouping_treemap)
