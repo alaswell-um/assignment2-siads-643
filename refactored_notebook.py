@@ -23,6 +23,10 @@ def get_distinct_hierarchical_mappings(hierarchical_levels,
                                         sheet_name):
     """
         Create a dataframe of the BLS hierarchy mapping to build treemap block levels.
+        :param List<string> hierarchical_levels ->  List of levels you want to select.
+        :param string filepath_excel_heirarchy -> Filepath to BLS excel file
+        :param string sheet_name -> Name of the sheet were BLS levels are stored.
+        :return Dataframe -> BLS Occupational Hierarchy
     """
     df_occupation_level_mapping = pd.read_excel(
                                     filepath_excel_heirarchy,
@@ -41,6 +45,10 @@ def create_treemap_levels(df_level_data,
     """
         Create groupings for treemap block levels. This function only allows for 
         2 levels deep.
+        :param Dataframe df_level_data -> Transactional BLS level data.
+        :param Dataframe df_hierarchical_map -> BLS Hieracrchy map.
+        :param List<string> level_names -> List of selected level names.
+        :return Dataframe, Dataframe -> Groupings for teemap blocks
     """
     # Create level 1 and level 2 dataframes for treemap block data objects.
     l1_grouping = df_level_data[0]
@@ -62,6 +70,12 @@ def filter_by_year_and_metric(l1_grouping,
                               metric):
     """
         Filter out the most recent year for analsyis by target metric.
+        :param Dataframe l1_grouping -> treemap block 1 df
+        :param Dataframe l1_grouping -> treemap block 2 df
+        :param List<string> level_names -> List of selected level names.
+        :param string year -> Filter by year
+        :param string metric -> Selected metric
+        :return Dataframe, Dataframe -> Filtered groupings for teemap blocks
     """
     l1_grouping = l1_grouping[l1_grouping['year'] == str(year)]
     l1_grouping = l1_grouping[level_names + [metric]]
@@ -77,6 +91,11 @@ def apply_short_names(l1_grouping,
     """
         Swaps out the original occupational name assigned by the BLS to short hand name
         for readabiility inside the treemap visual.
+        :param Dataframe l1_grouping -> treemap block 1 df
+        :param Dataframe l1_grouping -> treemap block 2 df
+        :param List<string> level_names -> List of selected level names.
+        :param string metric -> Selected metric
+        :return Dataframe, Dataframe -> Short name groupings for teemap blocks
     """
     l1 = level_names[0]
     l2 = level_names[1]
@@ -105,6 +124,11 @@ def create_labels_for_treemap(l1_grouping,
     """
         Creates treemap lables as "occupational_name | percentage_of_all_occupations" 
         and values as total number of workers.
+        :param Dataframe l1_grouping -> treemap block 1 df
+        :param Dataframe l1_grouping -> treemap block 2 df
+        :param List<string> level_names -> List of selected level names.
+        :param string metric -> Selected metric
+        :return Dataframe, Dataframe -> Labeled groupings for teemap blocks        
     """
     l1 = level_names[0]
     l2 = level_names[1]
