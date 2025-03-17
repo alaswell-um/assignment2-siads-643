@@ -4,15 +4,13 @@
 
     The data this module operates on is a flat representation of an occupational hierarchical.
     Ex.   Total
-            Management, professional, and related 
+            Management, professional, and related
                 Professional and related occupations
                     Computer and mathematical occupations
                         Mechanical Engineer
                         Archictect
                         Computer Engineer
                         etc...
-
-
 """
 import sys
 import os
@@ -26,11 +24,11 @@ if module_path not in sys.path:
 from data_manipulation import get_short_names, get_df_list_final
 
 def get_distinct_hierarchical_mappings(hierarchical_levels,
-                                        filepath_excel_heirarchy,                                              
+                                        filepath_excel_heirarchy,
                                         sheet_name):
     """
         Create a dataframe of the BLS hierarchy mapping to build treemap block levels.
-    """    
+    """
     df_occupation_level_mapping = pd.read_excel(filepath_excel_heirarchy, sheet_name=sheet_name, header=0)
     df_occupation_level_mapping_distinct = df_occupation_level_mapping[hierarchical_levels].drop_duplicates().reset_index()
     df_occupation_level_mapping_distinct = df_occupation_level_mapping_distinct[hierarchical_levels]
@@ -129,7 +127,7 @@ if __name__ == '__main__':
 
     levels = hierarchical_levels=['l4', 'l3', 'l2', 'l1']
     hierarchical_map = get_distinct_hierarchical_mappings(hierarchical_levels=levels,
-                                                          filepath_excel_heirarchy='./data/'+args.file, # 'bls_cpsaat39_2011_to_2015.xlsx'                                          
+                                                          filepath_excel_heirarchy='./data/' + args.file, # 'bls_cpsaat39_2011_to_2015.xlsx'                                          
                                                           sheet_name=args.sheet_name) # target_sheet = 'level_mapping_l0'
     
     target_levels = ['l1', 'l2']
