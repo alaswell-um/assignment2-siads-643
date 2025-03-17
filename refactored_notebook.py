@@ -123,19 +123,11 @@ def create_labels_for_treemap(l1_grouping,
     return l1_grouping, l2_grouping
 
 if __name__ == '__main__':
-    """
-        This function imports a flat file representation of the Bureau of Labor 
-        Statistics (BLS) and reformats into hierachical levels to be consumed by 
-        a treemap visual (bokeh preferred).
-
-    """
     import argparse
     # Add custom py file to directory to import functions
     module_path = os.path.abspath(os.path.join('.'))
     if module_path not in sys.path:
         sys.path.append(module_path)
-    # Import custom data manipulation helper functions
-    from data_manipulation import get_short_names, get_df_list_final
 
     parser = argparse.ArgumentParser()
     parser.add_argument('file', type=str, help='The name of the BLS excel data file.')
@@ -156,26 +148,26 @@ if __name__ == '__main__':
                                             df_hierarchical_map=hierarchical_map,
                                             level_names=target_levels)
 
-    target_metric = 'number_of_workers_all_sum'
+    TARGET_METRIC = 'number_of_workers_all_sum'
 
     l1_grouping_filtered, l2_grouping_filtered = filter_by_year_and_metric(
                                                     l1_grouping=tgt_l1_grouping,
                                                     l2_grouping=tgt_l2_grouping,
                                                     level_names=target_levels,
                                                     year=2015,
-                                                    metric=target_metric)
+                                                    metric=TARGET_METRIC)
 
     l1_grouping_short, l2_grouping_short = apply_short_names(
                                             l1_grouping=l1_grouping_filtered,
                                             l2_grouping=l2_grouping_filtered,
                                             level_names=target_levels,
-                                            metric=target_metric)
+                                            metric=TARGET_METRIC)
 
     l1_grouping_treemap, l2_grouping_treemap = create_labels_for_treemap(
                                                 l1_grouping=l1_grouping_short,
                                                 l2_grouping=l2_grouping_short,
                                                 level_names=target_levels,
-                                                metric=target_metric)
+                                                metric=TARGET_METRIC)
 
     # Print treemap hierarchical blocks to be used in treemap visual
     print(l1_grouping_treemap)
