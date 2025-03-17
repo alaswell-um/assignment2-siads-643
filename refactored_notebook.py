@@ -18,7 +18,6 @@ import sys
 import os
 import pandas as pd
 
-
 # Add custom py file to directory to import functions
 module_path = os.path.abspath(os.path.join('.'))
 if module_path not in sys.path:
@@ -39,7 +38,6 @@ def get_distinct_hierarchical_mappings(hierarchical_levels,
 
     return df_occupation_level_mapping_distinct
 
-
 def create_treemap_levels(df_level_data,
                           df_hierarchical_map,
                           level_names):
@@ -59,7 +57,6 @@ def create_treemap_levels(df_level_data,
 
     return l1_grouping, l2_grouping
 
-
 def filter_by_year_and_metric(l1_grouping, 
                               l2_grouping,
                               level_names,
@@ -74,7 +71,6 @@ def filter_by_year_and_metric(l1_grouping,
     l2_grouping = l2_grouping[[level_names[1]] + [metric]]
 
     return l1_grouping, l2_grouping
-
 
 def apply_short_names(l1_grouping, 
                       l2_grouping, 
@@ -98,7 +94,6 @@ def apply_short_names(l1_grouping,
 
     return l1_grouping, l2_grouping
 
-
 def create_labels_for_treemap(l1_grouping, 
                               l2_grouping,
                               level_names, 
@@ -119,7 +114,6 @@ def create_labels_for_treemap(l1_grouping,
     l2_grouping = l2_grouping[l2_grouping[metric] > 0]
 
     return l1_grouping, l2_grouping
-
 
 if __name__ == '__main__':
     """
