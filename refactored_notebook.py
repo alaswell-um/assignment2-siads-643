@@ -1,6 +1,7 @@
 """
-    This module process Bureau of Labor Statistics (BLS) data into a function treemap_data_manipulation 
-    from the main-project-notebook into the refactored_notebook py file.
+    This module process Bureau of Labor Statistics (BLS) data into a function 
+    treemap_data_manipulation from the main-project-notebook into the 
+    refactored_notebook py file.
 
     The data this module operates on is a flat representation of an occupational hierarchical.
     Ex.   Total
@@ -15,8 +16,7 @@
 import sys
 import os
 import pandas as pd
-
-
+from data_manipulation import get_short_names, get_df_list_final
 
 def get_distinct_hierarchical_mappings(hierarchical_levels,
                                         filepath_excel_heirarchy,
@@ -32,7 +32,6 @@ def get_distinct_hierarchical_mappings(hierarchical_levels,
           df_occupation_level_mapping[hierarchical_levels].drop_duplicates().reset_index()
     df_occupation_level_mapping_distinct =\
           df_occupation_level_mapping_distinct[hierarchical_levels]
-    df_occupation_level_mapping_distinct
 
     return df_occupation_level_mapping_distinct
 
@@ -73,16 +72,17 @@ def filter_by_year_and_metric(l1_grouping,
 
 def apply_short_names(l1_grouping,
                       l2_grouping,
-                      level_names):
+                      level_names,
+                      metric):
     """
         Swaps out the original occupational name assigned by the BLS to short hand name
         for readabiility inside the treemap visual.
     """
     l1 = level_names[0]
     l2 = level_names[1]
-     # Extract base metric exclusive of sex to be used by the 
+     # Extract base metric exclusive of sex to be used by the
      # get_short_names(level, metric) formatting function.
-    base_metric = target_metric.replace('_sum', '').replace('_women', '').\
+    base_metric = metric.replace('_sum', '').replace('_women', '').\
         replace('_men', '').replace('_all', '')
     # Get short name dictionary mapper
     short_name_l2 = get_short_names(l2, base_metric)
@@ -143,7 +143,7 @@ if __name__ == '__main__':
     '                    extract the BLS hierarchy.')
     args = parser.parse_args()
 
-    levels = hierarchical_levels=['l4', 'l3', 'l2', 'l1']
+    levels = ['l4', 'l3', 'l2', 'l1']
     hierarchical_map = get_distinct_hierarchical_mappings(
                             hierarchical_levels=levels,
                             filepath_excel_heirarchy='./data/' + args.file,
@@ -168,7 +168,8 @@ if __name__ == '__main__':
     l1_grouping_short, l2_grouping_short = apply_short_names(
                                             l1_grouping=l1_grouping_filtered,
                                             l2_grouping=l2_grouping_filtered,
-                                            level_names=target_levels)
+                                            level_names=target_levels,
+                                            metric=target_metric)
 
     l1_grouping_treemap, l2_grouping_treemap = create_labels_for_treemap(
                                                 l1_grouping=l1_grouping_short,

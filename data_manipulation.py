@@ -161,7 +161,7 @@ def get_palette(number_of_groups) -> dict:
         2: Cividis256[0]  + Cividis256[255]
     }
 
-    if number_of_groups in cividis:
+    if cividis.get(number_of_groups) is not None:
         color = cividis[number_of_groups]
     else:
         color = cividis['default']
@@ -169,7 +169,9 @@ def get_palette(number_of_groups) -> dict:
     return color
 
 def get_format_parameters(metric, number_of_groups) -> dict:
-
+    """
+        Get visualization configuration for treemap.
+    """
     palette = get_palette(number_of_groups=number_of_groups)
     label_offset_dict = {
         'default':{
@@ -230,7 +232,7 @@ def get_format_parameters(metric, number_of_groups) -> dict:
         },
     }
 
-    if metric in label_offset_dict:
+    if label_offset_dict.get(metric)  is not None:
         label_dict = label_offset_dict[metric]
     else:
         label_dict = label_offset_dict[metric]['default']
@@ -353,12 +355,12 @@ def get_df_record_occupation_level_grouped_by_year_filtered(merge_record_df) -> 
 
     return df_record_occ_lvl_grouped_by_year_filtered, df_occupation_level_mapping
 
-def get_df_level_list(df_record_occupation_level_grouped_by_year_filtered, 
+def get_df_level_list(df_record_occupation_level_grouped_by_year_filtered,
                       df_occupation_level_mapping):
     """
         Merges student record data with BLS dataset to create a list of dataframes 
         at the desired BLS aggregate level to feed treemap visuals.
-    """ 
+    """
     # select only the years with avaiable wages data in the BLS dataset.
     tabs = ['2015', '2014', '2013', '2012', '2011']
 
@@ -439,7 +441,7 @@ def get_df_level_list(df_record_occupation_level_grouped_by_year_filtered,
     selected_levels = ['l1','l2','l3']
     for level in selected_levels:
 
-        df_merge_bls_level = df_merge_bls[[level, 'year',       
+        df_merge_bls_level = df_merge_bls[[level, 'year',
                             'number_of_students_all_sum',
                             'number_of_students_men_sum', 
                             'number_of_students_women_sum', 
