@@ -16,12 +16,7 @@ import sys
 import os
 import pandas as pd
 
-# Add custom py file to directory to import functions
-module_path = os.path.abspath(os.path.join('.'))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-# Import custom data manipulation helper functions
-from data_manipulation import get_short_names, get_df_list_final
+
 
 def get_distinct_hierarchical_mappings(hierarchical_levels,
                                         filepath_excel_heirarchy,
@@ -30,8 +25,8 @@ def get_distinct_hierarchical_mappings(hierarchical_levels,
         Create a dataframe of the BLS hierarchy mapping to build treemap block levels.
     """
     df_occupation_level_mapping = pd.read_excel(
-                                    filepath_excel_heirarchy, 
-                                    sheet_name=sheet_name, 
+                                    filepath_excel_heirarchy,
+                                    sheet_name=sheet_name,
                                     header=0)
     df_occupation_level_mapping_distinct =\
           df_occupation_level_mapping[hierarchical_levels].drop_duplicates().reset_index()
@@ -61,7 +56,7 @@ def create_treemap_levels(df_level_data,
 
     return l1_grouping, l2_grouping
 
-def filter_by_year_and_metric(l1_grouping, 
+def filter_by_year_and_metric(l1_grouping,
                               l2_grouping,
                               level_names,
                               year,
@@ -76,8 +71,8 @@ def filter_by_year_and_metric(l1_grouping,
 
     return l1_grouping, l2_grouping
 
-def apply_short_names(l1_grouping, 
-                      l2_grouping, 
+def apply_short_names(l1_grouping,
+                      l2_grouping,
                       level_names):
     """
         Swaps out the original occupational name assigned by the BLS to short hand name
@@ -103,14 +98,14 @@ def apply_short_names(l1_grouping,
 
     return l1_grouping, l2_grouping
 
-def create_labels_for_treemap(l1_grouping, 
+def create_labels_for_treemap(l1_grouping,
                               l2_grouping,
-                              level_names, 
+                              level_names,
                               metric):
     """
         Creates treemap lables as "occupational_name | percentage_of_all_occupations" 
         and values as total number of workers.
-    """ 
+    """
     l1 = level_names[0]
     l2 = level_names[1]
     total = l2_grouping[metric].sum() # total seems low, validate later on
@@ -135,6 +130,13 @@ if __name__ == '__main__':
 
     """
     import argparse
+    # Add custom py file to directory to import functions
+    module_path = os.path.abspath(os.path.join('.'))
+    if module_path not in sys.path:
+        sys.path.append(module_path)
+    # Import custom data manipulation helper functions
+    from data_manipulation import get_short_names, get_df_list_final
+
     parser = argparse.ArgumentParser()
     parser.add_argument('file', type=str, help='The name of the BLS excel data file.')
     parser.add_argument('sheet_name', type=str, help='The the name of the sheet to '
@@ -144,34 +146,34 @@ if __name__ == '__main__':
     levels = hierarchical_levels=['l4', 'l3', 'l2', 'l1']
     hierarchical_map = get_distinct_hierarchical_mappings(
                             hierarchical_levels=levels,
-                            filepath_excel_heirarchy='./data/' + args.file,                                          
+                            filepath_excel_heirarchy='./data/' + args.file,
                             sheet_name=args.sheet_name)
-    
+
     target_levels = ['l1', 'l2']
     df_data = get_df_list_final()
     tgt_l1_grouping, tgt_l2_grouping = create_treemap_levels(
-                                            df_level_data=df_data, 
-                                            df_hierarchical_map=hierarchical_map, 
+                                            df_level_data=df_data,
+                                            df_hierarchical_map=hierarchical_map,
                                             level_names=target_levels)
 
     target_metric = 'number_of_workers_all_sum'
 
     l1_grouping_filtered, l2_grouping_filtered = filter_by_year_and_metric(
-                                                    l1_grouping=tgt_l1_grouping, 
+                                                    l1_grouping=tgt_l1_grouping,
                                                     l2_grouping=tgt_l2_grouping,
                                                     level_names=target_levels,
                                                     year=2015,
                                                     metric=target_metric)
 
     l1_grouping_short, l2_grouping_short = apply_short_names(
-                                            l1_grouping=l1_grouping_filtered, 
-                                            l2_grouping=l2_grouping_filtered, 
+                                            l1_grouping=l1_grouping_filtered,
+                                            l2_grouping=l2_grouping_filtered,
                                             level_names=target_levels)
 
     l1_grouping_treemap, l2_grouping_treemap = create_labels_for_treemap(
-                                                l1_grouping=l1_grouping_short, 
+                                                l1_grouping=l1_grouping_short,
                                                 l2_grouping=l2_grouping_short,
-                                                level_names=target_levels, 
+                                                level_names=target_levels,
                                                 metric=target_metric)
 
     # Print treemap hierarchical blocks to be used in treemap visual
