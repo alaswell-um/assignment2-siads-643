@@ -1,3 +1,6 @@
+"""
+    This module performs most of the data manipulation tasks for the BLS project
+"""
 import pandas as pd
 from bokeh.palettes import Cividis256
 
@@ -138,7 +141,7 @@ def get_short_names(level, metric) -> dict:
     if metric in short_names_dict[level].keys():
         short_name = short_names_dict[level][metric]
     else:
-        short_names_dict[level]['default']
+        short_name = short_names_dict[level]['default']
 
     return short_name
     
@@ -306,12 +309,16 @@ def get_df_record_occupation_level_grouped_by_year_filtered(merge_record_df) -> 
     df_record_occupation['MAJOR1_TERM_TERM_YEAR'] =\
           df_record_occupation['MAJOR1_TERM_TERM_YEAR'].apply(lambda x: str(x)[0:4])
     # Aggreate by occupation.
-    df_record_occupation_grouped = df_record_occupation.groupby(['OCCUPATION',term]).sum().reset_index()
+    df_record_occupation_grouped =\
+          df_record_occupation.groupby(['OCCUPATION',term]).sum().reset_index()
     # Import bls hierarchy mapping to join with grouped student occupation data.
     df_occupation_level_mapping =\
-          pd.read_excel('./data/bls_cpsaat39_2011_to_2015.xlsx', sheet_name='level_mapping_l0', header=0)
+          pd.read_excel('./data/bls_cpsaat39_2011_to_2015.xlsx',
+                        sheet_name='level_mapping_l0', header=0)
     df_occupation_level_mapping_distinct =\
-          df_occupation_level_mapping[['l4', 'l3', 'l2', 'l1']].drop_duplicates().reset_index()
+          df_occupation_level_mapping[
+              ['l4', 'l3', 'l2', 'l1']
+              ].drop_duplicates().reset_index()
     df_occupation_level_mapping_distinct =\
           df_occupation_level_mapping_distinct[['l4', 'l3', 'l2', 'l1']]
     # Merge student occupation data with bls hierarchy mapping.
@@ -338,13 +345,13 @@ def get_df_record_occupation_level_grouped_by_year_filtered(merge_record_df) -> 
                                                     'number_of_students_unknown']]
     
     # filter only the years with aviailable wager data in the BLS dataset.
-    df_record_occupation_level_grouped_by_year_filtered = df_record_occupation_level_grouped_by_year[
-                                                            df_record_occupation_level_grouped_by_year[
-                                                            'MAJOR1_TERM_TERM_YEAR'].\
-                                                            isin(['2011', '2012', '2013', 
-                                                                  '2014', '2015'])] 
+    df_record_occ_lvl_grouped_by_year_filtered = df_record_occupation_level_grouped_by_year[
+                                                    df_record_occupation_level_grouped_by_year[
+                                                    'MAJOR1_TERM_TERM_YEAR'].\
+                                                    isin(['2011', '2012', '2013', 
+                                                    '2014', '2015'])] 
     
-    return df_record_occupation_level_grouped_by_year_filtered, df_occupation_level_mapping
+    return df_record_occ_lvl_grouped_by_year_filtered, df_occupation_level_mapping
 
 def get_df_level_list(df_record_occupation_level_grouped_by_year_filtered, df_occupation_level_mapping):
     """
